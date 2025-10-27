@@ -11,8 +11,8 @@ import {
   SearchInput
 } from '@inventreedb/ui';
 import { t } from '@lingui/core/macro';
-import { ActionIcon, Group, Stack, Tooltip } from '@mantine/core';
-import { IconRefresh } from '@tabler/icons-react';
+import { ActionIcon, Alert, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { IconInfoCircle, IconRefresh } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
 import { DataTable } from 'mantine-datatable';
 import { useCallback, useMemo, useState } from 'react';
@@ -28,18 +28,29 @@ function HarmonizedSystemCodesPanel({
 }: {
   context: InvenTreePluginContext;
 }) {
+  console.log(context);
+
+  const companyId: string | number | null = useMemo(() => {
+    if (context.model === 'company' && !!context.id) {
+      return context.id;
+    } else {
+      return null;
+    }
+  }, [context.model, context.id]);
+
   const CODE_URL: string = '/plugin/harmonized-system-codes/';
 
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   const codesQuery = useQuery(
     {
-      queryKey: ['hsCodes', searchTerm],
+      queryKey: ['hsCodes', searchTerm, companyId],
       queryFn: async () => {
         return (
           context.api
             ?.get(CODE_URL, {
               params: {
+                customer: companyId || undefined,
                 search: searchTerm
               }
             })
@@ -59,10 +70,13 @@ function HarmonizedSystemCodesPanel({
       code: {},
       description: {},
       category: {},
-      customer: {},
+      customer: {
+        value: companyId || undefined,
+        disabled: !!companyId
+      },
       notes: {}
     };
-  }, []);
+  }, [companyId]);
 
   // Form to create a new HS code
   const createCodeForm = context.forms.create({
@@ -143,6 +157,18 @@ function HarmonizedSystemCodesPanel({
       {deleteCodeForm.modal}
       {editCodeForm.modal}
       <Stack gap='xs'>
+        {companyId && (
+          <Alert
+            color='blue'
+            icon={<IconInfoCircle />}
+            title={t`Customer Codes`}
+          >
+            <Stack gap='xs'>
+              <Text size='sm'>{t`Displaying harmonized system codes associated only with this customer.`}</Text>
+              <Text size='sm'>{t`These values will override any global codes for this customer.`}</Text>
+            </Stack>
+          </Alert>
+        )}
         <Group justify='space-between'>
           <Group gap='xs'>
             <AddItemButton
