@@ -57,22 +57,18 @@ class HarmonizedSystemCodes(
     # Ref: https://docs.inventree.org/en/latest/plugins/mixins/event/
     def wants_process_event(self, event: str) -> bool:
         """Return True if the plugin wants to process the given event."""
-        # Example: only process the 'create part' event
-        return event == "part_part.created"
+        # TODO: Handle custom events here when line items are created / modified
+        return False
 
     def process_event(self, event: str, *args, **kwargs) -> None:
         """Process the provided event."""
-        print("Processing custom event:", event)
-        print("Arguments:", args)
-        print("Keyword arguments:", kwargs)
+        ...
 
     def add_report_context(
         self, report_instance, model_instance, request, context, **kwargs
     ):
         """Add custom context data to a report rendering context."""
-
-        # Add custom context data to the report rendering context
-        print("CUSTOM REPORT:", model_instance)
+        ...
 
     # Custom URL endpoints (from UrlsMixin)
     # Ref: https://docs.inventree.org/en/latest/plugins/mixins/urls/
