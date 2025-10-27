@@ -1,4 +1,5 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![PyPI](https://img.shields.io/pypi/v/inventree-harmonized-system-codes)](https://pypi.org/project/inventree-harmonized-system-codes/)
 ![PEP](https://github.com/SchrodingersGat/inventree-harmonized-codes/actions/workflows/ci.yaml/badge.svg)
 
 # Harmonized System Codes
