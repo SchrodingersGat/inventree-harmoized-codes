@@ -93,11 +93,18 @@ class HarmonizedSystemCodes(
     def setup_urls(self):
         """Configure custom URL endpoints for this plugin."""
         from django.urls import path
-        from .views import ExampleView
+        from .views import HarmonizedSystemCodeList, HarmonizedSystemCodeDetail
 
         return [
             # Provide path to a simple custom view - replace this with your own views
-            path("example/", ExampleView.as_view(), name="example-view"),
+            path(
+                "<int:pk>/",
+                HarmonizedSystemCodeDetail.as_view(),
+                name="harmonizedsystemcode-detail",
+            ),
+            path(
+                "", HarmonizedSystemCodeList.as_view(), name="harmonizedsystemcode-list"
+            ),
         ]
 
     # User interface elements (from UserInterfaceMixin)
