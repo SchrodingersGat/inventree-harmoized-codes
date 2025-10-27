@@ -1,11 +1,11 @@
 msgid ""
 msgstr ""
-"POT-Creation-Date: 2025-08-05 13:54+0000\n"
+"POT-Creation-Date: 2025-10-27 08:49+0000\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
-"Language: en\n"
+"Language: zh_Hant\n"
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "PO-Revision-Date: \n"
@@ -15,36 +15,32 @@ msgstr ""
 
 #: src/Panel.tsx:78
 msgid "Create Harmonized Code"
-msgstr "Create Harmonized Code"
+msgstr ""
 
 #: src/Panel.tsx:86
 msgid "Edit Harmonized Code"
-msgstr "Edit Harmonized Code"
+msgstr ""
 
 #: src/Panel.tsx:94
 msgid "Delete Harmonized Code"
-msgstr "Delete Harmonized Code"
-
-#: src/Panel.tsx:96
-#~ msgid "Translated Text"
-#~ msgstr "Translated Text"
+msgstr ""
 
 #: src/Panel.tsx:119
 #~ msgid "Translated text, provided by custom code!"
-#~ msgstr "Translated text, provided by custom code!"
+#~ msgstr ""
 
 #: src/Panel.tsx:120
 #~ msgid "Translations are loaded automatically."
-#~ msgstr "Translations are loaded automatically."
+#~ msgstr ""
 
 #: src/Panel.tsx:121
 #~ msgid "Fallback locale is used if no translation is available"
-#~ msgstr "Fallback locale is used if no translation is available"
+#~ msgstr ""
 
 #: src/Panel.tsx:157
 msgid "Add new harmonized code"
-msgstr "Add new harmonized code"
+msgstr ""
 
 #: src/Panel.tsx:184
 msgid "No Harmonized System Codes found"
-msgstr "No Harmonized System Codes found"
+msgstr ""

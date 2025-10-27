@@ -110,26 +110,50 @@ class HarmonizedSystemCodes(
     # User interface elements (from UserInterfaceMixin)
     # Ref: https://docs.inventree.org/en/latest/plugins/mixins/ui/
 
+    def display_codes_panel(self, request, context: dict, **kwargs):
+        """Determine whether to display the harmonized system codes panel."""
+
+        from company.models import Company
+
+        target_model = context.get("target_model", None)
+        target_id = context.get("target_id", None)
+
+        # Always display on the admin center
+        if target_model == "admincenter":
+            return True
+
+        # Display for customers
+        if target_model == "company" and target_id:
+            try:
+                company = Company.objects.filter(pk=target_id).first()
+                if company and company.is_customer:
+                    return True
+            except (Company.DoesNotExist, ValueError):
+                return False
+
+        # Default: do not display
+        return False
+
     # Custom UI panels
     def get_ui_panels(self, request, context: dict, **kwargs):
         """Return a list of custom panels to be rendered in the InvenTree user interface."""
 
         panels = []
 
-        # Only display this panel for the 'part' target
-        if context.get("target_model") == "part":
+        # TODO: Look at the group that the user is in
+
+        if self.display_codes_panel(request, context, **kwargs):
             panels.append({
                 "key": "harmonized-system-codes-panel",
-                "title": "Harmonized System Codes",
-                "description": "Custom panel description",
-                "icon": "ti:mood-smile:outline",
+                "title": "Harmonized Codes",
+                "description": "Display harmonized system codes",
+                "icon": "ti:flag-search:outline",
                 "source": self.plugin_static_file(
                     "Panel.js:renderHarmonizedSystemCodesPanel"
                 ),
                 "context": {
                     # Provide additional context data to the panel
                     "settings": self.get_settings_dict(),
-                    "foo": "bar",
                 },
             })
 

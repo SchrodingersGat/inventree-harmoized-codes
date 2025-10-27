@@ -1,24 +1,21 @@
 // Import for type checking
 import {
-  ApiEndpoints,
+  AddItemButton,
+  type ApiFormFieldSet,
   apiUrl,
   checkPluginVersion,
   type InvenTreePluginContext,
-  ModelType
+  RowActions,
+  RowDeleteAction,
+  RowEditAction,
+  SearchInput
 } from '@inventreedb/ui';
 import { t } from '@lingui/core/macro';
-import {
-  Alert,
-  Button,
-  Group,
-  SimpleGrid,
-  Stack,
-  Text,
-  Title
-} from '@mantine/core';
-import { notifications } from '@mantine/notifications';
+import { ActionIcon, Alert, Group, Stack, Text, Tooltip } from '@mantine/core';
+import { IconInfoCircle, IconRefresh } from '@tabler/icons-react';
 import { useQuery } from '@tanstack/react-query';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { DataTable } from 'mantine-datatable';
+import { useCallback, useMemo, useState } from 'react';
 import { LocalizedComponent } from './locale';
 
 /**
@@ -31,139 +28,183 @@ function HarmonizedSystemCodesPanel({
 }: {
   context: InvenTreePluginContext;
 }) {
-  // React hooks can be used within plugin components
-  useEffect(() => {
-    console.log('useEffect in plugin component:');
-    console.log('- Model:', context.model);
-    console.log('- ID:', context.id);
+  console.log(context);
+
+  const companyId: string | number | null = useMemo(() => {
+    if (context.model === 'company' && !!context.id) {
+      return context.id;
+    } else {
+      return null;
+    }
   }, [context.model, context.id]);
 
-  // Memoize the part ID as passed via the context object
-  const partId = useMemo(() => {
-    return context.model == ModelType.part ? context.id || null : null;
-  }, [context.model, context.id]);
+  const CODE_URL: string = '/plugin/harmonized-system-codes/';
 
-  // Hello world - counter example
-  const [counter, setCounter] = useState<number>(0);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
-  // Extract context information
-  const instance: string = useMemo(() => {
-    const data = context?.instance ?? {};
-    return JSON.stringify(data, null, 2);
-  }, [context.instance]);
-
-  // Fetch API data from the example API endpoint
-  // It will re-fetch when the partId changes
-  const apiQuery = useQuery(
+  const codesQuery = useQuery(
     {
-      queryKey: ['apiData', partId],
+      queryKey: ['hsCodes', searchTerm, companyId],
       queryFn: async () => {
-        const url = `/plugin/harmonized-system-codes/example/`;
-
-        return context.api
-          .get(url)
-          .then((response) => response.data)
-          .catch(() => {});
+        return (
+          context.api
+            ?.get(CODE_URL, {
+              params: {
+                customer: companyId || undefined,
+                search: searchTerm
+              }
+            })
+            .then((response) => response.data) || []
+        );
       }
     },
     context.queryClient
   );
 
-  // Custom form to edit the selected part
-  const editPartForm = context.forms.edit({
-    url: apiUrl(ApiEndpoints.part_list, partId),
-    title: 'Edit Part',
-    preFormContent: (
-      <Alert title='Custom Plugin Form' color='blue'>
-        This is a custom form launched from within a plugin!
-      </Alert>
-    ),
-    fields: {
-      name: {},
+  // Record which is selected in the table
+  const [selectedRecord, setSelectedRecord] = useState<any>(null);
+
+  // Form fields for the codes
+  const codeFields: ApiFormFieldSet = useMemo(() => {
+    return {
+      code: {},
       description: {},
-      category: {}
-    },
-    successMessage: null,
-    onFormSuccess: () => {
-      notifications.show({
-        title: 'Success',
-        message: 'Part updated successfully!',
-        color: 'green'
-      });
-    }
+      category: {},
+      customer: {
+        value: companyId || undefined,
+        disabled: !!companyId
+      },
+      notes: {}
+    };
+  }, [companyId]);
+
+  // Form to create a new HS code
+  const createCodeForm = context.forms.create({
+    url: apiUrl(CODE_URL),
+    title: t`Create Harmonized Code`,
+    fields: codeFields,
+    onFormSuccess: codesQuery.refetch
   });
 
-  // Custom callback function example
-  const openForm = useCallback(() => {
-    editPartForm?.open();
-  }, [editPartForm]);
+  // Form to edit an existing HS code
+  const editCodeForm = context.forms.edit({
+    url: apiUrl(CODE_URL, selectedRecord?.pk),
+    title: t`Edit Harmonized Code`,
+    fields: codeFields,
+    onFormSuccess: codesQuery.refetch
+  });
 
-  // Navigation functionality example
-  const gotoDashboard = useCallback(() => {
-    context.navigate('/home');
-  }, [context]);
+  // Form to delete an existing HS code
+  const deleteCodeForm = context.forms.delete({
+    url: apiUrl(CODE_URL, selectedRecord?.pk),
+    title: t`Delete Harmonized Code`,
+    onFormSuccess: codesQuery.refetch
+  });
+
+  // Row actions
+  const rowActions = useCallback((record: any) => {
+    return [
+      RowEditAction({
+        onClick: () => {
+          setSelectedRecord(record);
+          editCodeForm?.open();
+        }
+      }),
+      RowDeleteAction({
+        onClick: () => {
+          setSelectedRecord(record);
+          deleteCodeForm?.open();
+        }
+      })
+    ];
+  }, []);
+
+  const tableColumns: any = useMemo(() => {
+    return [
+      {
+        accessor: 'code'
+      },
+      {
+        accessor: 'description'
+      },
+      {
+        accessor: 'category',
+        render: (record: any) => record.category_detail?.name ?? '-'
+      },
+      {
+        accessor: 'customer',
+        render: (record: any) => record.customer_detail?.name ?? '-'
+      },
+      {
+        accessor: 'notes'
+      },
+      {
+        accessor: '---',
+        title: ' ',
+        width: 50,
+        resizable: false,
+        sortable: false,
+        render: (record: any, index: number) => (
+          <RowActions actions={rowActions(record)} index={index} />
+        )
+      }
+    ];
+  }, []);
 
   return (
     <>
-      {editPartForm.modal}
+      {createCodeForm.modal}
+      {deleteCodeForm.modal}
+      {editCodeForm.modal}
       <Stack gap='xs'>
-        <Title c={context.theme.primaryColor} order={3}>
-          Harmonized System Codes
-        </Title>
-        <Text>
-          This is a custom panel for the HarmonizedSystemCodes plugin.
-        </Text>
-        <SimpleGrid cols={2}>
-          <Alert title='Translated Text' color='grape'>
+        {companyId && (
+          <Alert
+            color='blue'
+            icon={<IconInfoCircle />}
+            title={t`Customer Codes`}
+          >
             <Stack gap='xs'>
-              <Text>{t`Translated text, provided by custom code!`}</Text>
-              <Text>{t`Translations are loaded automatically.`}</Text>
-              <Text>{t`Fallback locale is used if no translation is available`}</Text>
+              <Text size='sm'>{t`Displaying harmonized system codes associated only with this customer.`}</Text>
+              <Text size='sm'>{t`These values will override any global codes for this customer.`}</Text>
             </Stack>
           </Alert>
-          <Group justify='apart' wrap='nowrap' gap='sm'>
-            <Button color='blue' onClick={gotoDashboard}>
-              Go to Dashboard
-            </Button>
-            {partId && (
-              <Button color='green' onClick={openForm}>
-                Edit Part
-              </Button>
-            )}
-            <Button onClick={() => setCounter(counter + 1)}>
-              Increment Counter
-            </Button>
-            <Text size='xl'>Counter: {counter}</Text>
+        )}
+        <Group justify='space-between'>
+          <Group gap='xs'>
+            <AddItemButton
+              tooltip={t`Add new harmonized code`}
+              onClick={createCodeForm.open}
+            />
           </Group>
-          {instance ? (
-            <Alert title='Instance Data' color='blue'>
-              {instance}
-            </Alert>
-          ) : (
-            <Alert title='No Instance' color='yellow'>
-              No instance data available
-            </Alert>
-          )}
-          {apiQuery.isFetched && apiQuery.data && (
-            <Alert color='green' title='API Query Data'>
-              {apiQuery.isFetching || apiQuery.isLoading ? (
-                <Text>Loading...</Text>
-              ) : (
-                <Stack gap='xs'>
-                  <Text>Part Count: {apiQuery.data.part_count}</Text>
-                  <Text>Today: {apiQuery.data.today}</Text>
-                  <Text>Random Text: {apiQuery.data.random_text}</Text>
-                  <Button
-                    disabled={apiQuery.isFetching || apiQuery.isLoading}
-                    onClick={() => apiQuery.refetch()}
-                  >
-                    Reload Data
-                  </Button>
-                </Stack>
-              )}
-            </Alert>
-          )}
-        </SimpleGrid>
+          <Group gap='xs'>
+            <SearchInput
+              searchCallback={(value: string) => {
+                setSearchTerm(value);
+              }}
+            />
+            <Tooltip label='Refresh data' position='top-end'>
+              <ActionIcon
+                variant='transparent'
+                onClick={() => {
+                  codesQuery.refetch();
+                }}
+              >
+                <IconRefresh />
+              </ActionIcon>
+            </Tooltip>
+          </Group>
+        </Group>
+        <DataTable
+          minHeight={250}
+          withTableBorder
+          withColumnBorders
+          idAccessor='pk'
+          noRecordsText={t`No Harmonized System Codes found`}
+          fetching={codesQuery.isFetching || codesQuery.isLoading}
+          columns={tableColumns}
+          records={codesQuery.data || []}
+          pinLastColumn
+        />
       </Stack>
     </>
   );
