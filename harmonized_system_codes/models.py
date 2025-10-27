@@ -46,6 +46,8 @@ class HarmonizedSystemCode(models.Model):
 
     customer = models.ForeignKey(
         Company,
+        blank=True,
+        null=True,
         on_delete=models.CASCADE,
         verbose_name=_("Customer"),
         help_text=_("Customer associated with this HS code"),

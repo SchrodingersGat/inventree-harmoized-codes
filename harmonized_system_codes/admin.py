@@ -2,15 +2,19 @@
 
 from django.contrib import admin
 
-from .models import ExampleModel
+from .models import HarmonizedSystemCode
 
 
-@admin.register(ExampleModel)
-class ExampleModelAdmin(admin.ModelAdmin):
-    """Admin interface for the ExampleModel."""
+@admin.register(HarmonizedSystemCode)
+class HarmonizedSystemCodeAdmin(admin.ModelAdmin):
+    """Admin interface for the HarmonizedSystemCode."""
 
     list_display = (
-        "user",
-        "counter",
+        "code",
+        "category",
     )
-    list_filter = ("user",)
+
+    autocomplete_fields = (
+        "category",
+        "customer",
+    )

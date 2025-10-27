@@ -5,39 +5,31 @@ In practice, you would define your custom serializers here.
 Ref: https://www.django-rest-framework.org/api-guide/serializers/
 """
 
-from rest_framework import serializers
+from company.serializers import CompanySerializer
+from InvenTree.serializers import InvenTreeModelSerializer
+from part.serializers import CategorySerializer
+
+from .models import HarmonizedSystemCode
 
 
-class ExampleSerializer(serializers.Serializer):
-    """Example serializer for the HarmonizedSystemCodes plugin.
-
-    This simply demonstrates how to create a serializer,
-    with a few example fields of different types.
-    """
+class HarmonizedSystemCodeSerializer(InvenTreeModelSerializer):
+    """Serializer for the HarmonizedSystemCode model."""
 
     class Meta:
-        """Meta options for this serializer."""
+        """Meta options for the serializer."""
 
+        model = HarmonizedSystemCode
         fields = [
-            "random_text",
-            "part_count",
-            "today",
+            "pk",
+            "code",
+            "description",
+            "category",
+            "category_detail",
+            "customer",
+            "customer_detail",
+            "notes",
         ]
 
-    random_text = serializers.CharField(
-        max_length=100,
-        required=True,
-        label="Random Text",
-        help_text="A text field containing randomly generated data.",
-    )
+    category_detail = CategorySerializer(source="category", many=False, read_only=True)
 
-    part_count = serializers.IntegerField(
-        label="Number of Parts",
-        help_text="Total number of parts in the InvenTree database.",
-    )
-
-    today = serializers.DateField(
-        required=False,
-        label="Today",
-        help_text="The current date.",
-    )
+    customer_detail = CompanySerializer(source="customer", many=False, read_only=True)
