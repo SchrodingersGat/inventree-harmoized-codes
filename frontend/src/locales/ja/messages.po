@@ -13,18 +13,38 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
+#: src/Panel.tsx:78
+msgid "Create Harmonized Code"
+msgstr ""
+
+#: src/Panel.tsx:86
+msgid "Edit Harmonized Code"
+msgstr ""
+
+#: src/Panel.tsx:94
+msgid "Delete Harmonized Code"
+msgstr ""
+
 #: src/Panel.tsx:96
-msgid "Translated Text"
-msgstr "翻訳されたテキスト"
+#~ msgid "Translated Text"
+#~ msgstr "翻訳されたテキスト"
 
-#: src/Panel.tsx:97
-msgid "Translated text, provided by custom code!"
+#: src/Panel.tsx:119
+#~ msgid "Translated text, provided by custom code!"
+#~ msgstr ""
+
+#: src/Panel.tsx:120
+#~ msgid "Translations are loaded automatically."
+#~ msgstr ""
+
+#: src/Panel.tsx:121
+#~ msgid "Fallback locale is used if no translation is available"
+#~ msgstr ""
+
+#: src/Panel.tsx:157
+msgid "Add new harmonized code"
 msgstr ""
 
-#: src/Panel.tsx:98
-msgid "Translations are loaded automatically."
-msgstr ""
-
-#: src/Panel.tsx:99
-msgid "Fallback locale is used if no translation is available"
+#: src/Panel.tsx:184
+msgid "No Harmonized System Codes found"
 msgstr ""

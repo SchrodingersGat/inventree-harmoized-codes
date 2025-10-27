@@ -116,21 +116,22 @@ class HarmonizedSystemCodes(
 
         panels = []
 
-        # Only display this panel for the 'part' target
-        if context.get("target_model") == "part":
-            panels.append({
-                "key": "harmonized-system-codes-panel",
-                "title": "Harmonized System Codes",
-                "description": "Custom panel description",
-                "icon": "ti:mood-smile:outline",
-                "source": self.plugin_static_file(
-                    "Panel.js:renderHarmonizedSystemCodesPanel"
-                ),
-                "context": {
-                    # Provide additional context data to the panel
-                    "settings": self.get_settings_dict(),
-                    "foo": "bar",
-                },
-            })
+        # TODO: Determine *where* to display this panel
+
+        # TODO: Look at the group that the user is in
+
+        panels.append({
+            "key": "harmonized-system-codes-panel",
+            "title": "Harmonized Codes",
+            "description": "Display harmonized system codes",
+            "icon": "ti:flag-search:outline",
+            "source": self.plugin_static_file(
+                "Panel.js:renderHarmonizedSystemCodesPanel"
+            ),
+            "context": {
+                # Provide additional context data to the panel
+                "settings": self.get_settings_dict(),
+            },
+        })
 
         return panels

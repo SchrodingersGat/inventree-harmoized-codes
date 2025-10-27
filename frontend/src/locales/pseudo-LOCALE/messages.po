@@ -6,15 +6,41 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: @lingui/cli\n"
 "Language: pseudo-LOCALE\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
 
-#: src/Panel.tsx:104
-msgid "Translated text, provided by custom code!"
+#: src/Panel.tsx:78
+msgid "Create Harmonized Code"
 msgstr ""
 
-#: src/Panel.tsx:105
-msgid "Translations are loaded automatically."
+#: src/Panel.tsx:86
+msgid "Edit Harmonized Code"
 msgstr ""
 
-#: src/Panel.tsx:106
-msgid "Fallback locale is used if no translation is available"
+#: src/Panel.tsx:94
+msgid "Delete Harmonized Code"
+msgstr ""
+
+#: src/Panel.tsx:119
+#~ msgid "Translated text, provided by custom code!"
+#~ msgstr ""
+
+#: src/Panel.tsx:120
+#~ msgid "Translations are loaded automatically."
+#~ msgstr ""
+
+#: src/Panel.tsx:121
+#~ msgid "Fallback locale is used if no translation is available"
+#~ msgstr ""
+
+#: src/Panel.tsx:157
+msgid "Add new harmonized code"
+msgstr ""
+
+#: src/Panel.tsx:184
+msgid "No Harmonized System Codes found"
 msgstr ""
