@@ -66,27 +66,13 @@ class HarmonizedSystemCodes(
         print("Arguments:", args)
         print("Keyword arguments:", kwargs)
 
-    # Custom report context (from ReportMixin)
-    # Ref: https://docs.inventree.org/en/latest/plugins/mixins/report/
-    def add_label_context(
-        self, label_instance, model_instance, request, context, **kwargs
-    ):
-        """Add custom context data to a label rendering context."""
-
-        # Add custom context data to the label rendering context
-        context["foo"] = "label_bar"
-
     def add_report_context(
         self, report_instance, model_instance, request, context, **kwargs
     ):
         """Add custom context data to a report rendering context."""
 
         # Add custom context data to the report rendering context
-        context["foo"] = "report_bar"
-
-    def report_callback(self, template, instance, report, request, **kwargs):
-        """Callback function called after a report is generated."""
-        ...
+        print("CUSTOM REPORT:", model_instance)
 
     # Custom URL endpoints (from UrlsMixin)
     # Ref: https://docs.inventree.org/en/latest/plugins/mixins/urls/
