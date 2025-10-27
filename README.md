@@ -19,6 +19,16 @@ To install manually via the command line, run the following command:
 pip install harmonized-system-codes
 ```
 
+## Setup
+
+### Activate the Plugin
+
+... todo ...
+
+### Run Migrations
+
+... todo ...
+
 ## Configuration
 
 ... todo ...
