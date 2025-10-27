@@ -1,5 +1,7 @@
 """Support harmonized system codes against sales orders"""
 
+from django.contrib.auth.models import Group
+
 from plugin import InvenTreePlugin
 
 from plugin.mixins import (
@@ -45,11 +47,10 @@ class HarmonizedSystemCodes(
     # Ref: https://docs.inventree.org/en/latest/plugins/mixins/settings/
     SETTINGS = {
         # Define your plugin settings here...
-        "CUSTOM_VALUE": {
-            "name": "Custom Value",
-            "description": "A custom value",
-            "validator": int,
-            "default": 42,
+        "USER_GROUP": {
+            "name": "User Group",
+            "description": "Group with access to harmonized system codes",
+            "model": "auth.group",
         }
     }
 
@@ -104,6 +105,10 @@ class HarmonizedSystemCodes(
         if target_model == "admincenter":
             return True
 
+        # Always display on the "sales" index page
+        if target_model == "sales" and target_id is None:
+            return True
+
         # Display for customers
         if target_model == "company" and target_id:
             try:
@@ -122,9 +127,18 @@ class HarmonizedSystemCodes(
 
         panels = []
 
-        # TODO: Look at the group that the user is in
+        user_valid = request.user and request.user.is_authenticated
 
-        if self.display_codes_panel(request, context, **kwargs):
+        # Look at the group that the user is in
+        if group_id := self.get_setting("USER_GROUP", backup_value=None):
+            try:
+                group = Group.objects.get(id=group_id)
+                if not request.user.groups.filter(id=group.id).exists():
+                    user_valid = False
+            except Group.DoesNotExist:
+                user_valid = False
+
+        if user_valid and self.display_codes_panel(request, context, **kwargs):
             panels.append({
                 "key": "harmonized-system-codes-panel",
                 "title": "Harmonized Codes",
