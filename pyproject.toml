@@ -27,7 +27,7 @@ classifiers = [
     "Framework :: InvenTree",
 ]
 [project.urls]
-Homepage = "https://github.com/SchrodingersGat/inventree-harmoized-codes"
+Homepage = "https://github.com/SchrodingersGat/inventree-harmonized-codes"
 
 [project.entry-points."inventree_plugins"]
 HarmonizedSystemCodes = "harmonized_system_codes.core:HarmonizedSystemCodes"
