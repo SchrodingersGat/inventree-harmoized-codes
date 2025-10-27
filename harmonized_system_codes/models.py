@@ -6,33 +6,55 @@ This file is where you can define any custom database models.
 - Don't forget to register your models in the admin interface if needed!
 """
 
-from django.contrib.auth.models import User
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from part.models import PartCategory
+from company.models import Company
 
-class ExampleModel(models.Model):
-    """An example model for the HarmonizedSystemCodes plugin."""
+
+class HarmonizedSystemCode(models.Model):
+    """Model representing a Harmonized System Code."""
 
     class Meta:
         """Meta options for the model."""
 
         app_label = "harmonized_system_codes"
-        verbose_name = _("Example Model")
-        verbose_name_plural = _("Example Models")
+        verbose_name = _("Harmonized System Code")
+        verbose_name_plural = _("Harmonized System Codes")
 
-    user = models.OneToOneField(
-        User,
-        unique=True,
-        null=False,
-        blank=False,
-        on_delete=models.CASCADE,
-        related_name="example_model",
-        help_text=_("The user associated with this example model"),
+    code = models.CharField(
+        max_length=20,
+        verbose_name=_("Code"),
+        help_text=_("Harmonized System Code"),
     )
 
-    counter = models.IntegerField(
-        default=0,
-        verbose_name=_("Counter"),
-        help_text=_("A simple counter for the example model"),
+    description = models.CharField(
+        max_length=250,
+        blank=True,
+        verbose_name=_("Description"),
+        help_text=_("Description of the Harmonized System Code"),
+    )
+
+    category = models.ForeignKey(
+        PartCategory,
+        on_delete=models.CASCADE,
+        verbose_name=_("Category"),
+        help_text=_("Part category associated with this HS code"),
+        related_name="hs_codes",
+    )
+
+    customer = models.ForeignKey(
+        Company,
+        on_delete=models.CASCADE,
+        verbose_name=_("Customer"),
+        help_text=_("Customer associated with this HS code"),
+        related_name="hs_codes",
+    )
+
+    notes = models.CharField(
+        max_length=500,
+        blank=True,
+        verbose_name=_("Notes"),
+        help_text=_("Additional notes about the HS code"),
     )
