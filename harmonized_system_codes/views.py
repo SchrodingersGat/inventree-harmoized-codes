@@ -7,6 +7,7 @@ from rest_framework import permissions
 
 from InvenTree.filters import SEARCH_ORDER_FILTER
 from InvenTree.mixins import ListCreateAPI, RetrieveUpdateDestroyAPI
+from InvenTree.permissions import RolePermission
 
 from .models import HarmonizedSystemCode
 from .serializers import HarmonizedSystemCodeSerializer
@@ -18,8 +19,9 @@ class HarominzedSystemCodeMixin:
     queryset = HarmonizedSystemCode.objects.all()
     serializer_class = HarmonizedSystemCodeSerializer
 
-    # TODO: Adjust permissions?
-    permission_classes = [permissions.IsAuthenticated]
+    role_required = "sales_order"
+
+    permission_classes = [permissions.IsAuthenticated, RolePermission]
 
 
 class HarmonizedSystemCodeList(HarominzedSystemCodeMixin, ListCreateAPI):
