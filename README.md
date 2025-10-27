@@ -17,7 +17,7 @@ The recommended method to install this plugin is via the InvenTree Plugin Manage
 To install manually via the command line, run the following command:
 
 ```bash
-pip install harmonized-system-codes
+pip install inventree-harmonized-system-codes
 ```
 
 ## Setup
