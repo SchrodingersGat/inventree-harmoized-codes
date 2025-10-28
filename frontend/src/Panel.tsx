@@ -69,6 +69,9 @@ function HarmonizedSystemCodesPanel({
       description: {},
       category: {},
       customer: {
+        filters: {
+          is_customer: true
+        },
         value: companyId || undefined,
         disabled: !!companyId
       },
