@@ -28,8 +28,6 @@ function HarmonizedSystemCodesPanel({
 }: {
   context: InvenTreePluginContext;
 }) {
-  console.log(context);
-
   const companyId: string | number | null = useMemo(() => {
     if (context.model === 'company' && !!context.id) {
       return context.id;
